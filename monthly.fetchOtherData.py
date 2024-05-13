@@ -15,7 +15,7 @@ dfm = df.tail(1).to_period('M')
 not_nan_columns = dfm.columns[dfm.notna().all()]
 
 print(not_nan_columns)
-ss, local_file_path = "", f"D:/project/finlabexportdata/data/json/monthlyRevenue.json"
+ss, local_file_path = "", f"D:/project/stockDataLab/data/json/monthlyRevenue.json"
 
 # 刪除文件（如果存在）
 if os.path.exists(local_file_path):

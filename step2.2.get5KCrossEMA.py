@@ -13,7 +13,7 @@ from finlab import data
 import os
 from io import StringIO
 
-rootpath= "D:/project/finlabexportdata/"
+rootpath= "D:/project/stockDataLab/"
 headers = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36(KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"
 }
@@ -71,5 +71,5 @@ for i in range(0, len(df2), batch_size):
     data_to_insert = [tuple(record) for record in rec_array]
 
     # 在這裡換成你的實際資料庫寫入函數
-    # bs.ExecuteSqllite("D:\\project\\finlabexportdata\\stock.db", sql_command, data_to_insert)
+    # bs.ExecuteSqllite("D:\\project\\stockDataLab\\stock.db", sql_command, data_to_insert)
 

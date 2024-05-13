@@ -41,7 +41,7 @@ async def getYuantaETFDataAsync(stockId):
     # print(df)
 
 
-    rootPath= "D:/project/finlabexportdata/Lab001_ETF"  #已經改過
+    rootPath= "D:/project/stockDataLab/Lab001_ETF"  #已經改過
     nowDate = time.strftime("%Y%m%d", time.localtime())
     df.to_csv(f"{rootPath}/data/{stockId}/{nowDate}.csv", index=False, sep='\t') #儲存成CSV
 
@@ -50,8 +50,8 @@ async def getYuantaETFDataAsync(stockId):
 
 async def getAllEtfData(stockId):
 # 設置 CSV 檔案目錄
-    # read_csv_dir = f"D:/project/finlabexportdata/Lab001_ETF/data/{stockId}"
-    # write_csv_dir = f"D:/project/finlabexportdata/Lab001_ETF/data/compared/{stockId}"
+    # read_csv_dir = f"D:/project/stockDataLab/Lab001_ETF/data/{stockId}"
+    # write_csv_dir = f"D:/project/stockDataLab/Lab001_ETF/data/compared/{stockId}"
 
     read_csv_dir = f"data/{stockId}"
     write_csv_dir = f"data/compared/{stockId}"
@@ -87,9 +87,9 @@ async def getAllEtfData(stockId):
 
 
 async def main():
-    # await getYuantaETFDataAsync('00940')
-    # await getYuantaETFDataAsync('0050')
-    # await getYuantaETFDataAsync('0056')
+    await getYuantaETFDataAsync('00940')
+    await getYuantaETFDataAsync('0050')
+    await getYuantaETFDataAsync('0056')
 
     await getAllEtfData('00940')
     await getAllEtfData('0050')

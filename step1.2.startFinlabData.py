@@ -1,6 +1,6 @@
 # %%
 ## 找出今天數量，各種均量
-rootpath= "D:/project/finlabexportdata/"
+rootpath= "D:/project/stockDataLab/"
 import finlab
 finlab.login(open(f"{rootpath}config.txt", "r").read())
 

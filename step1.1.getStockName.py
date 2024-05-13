@@ -13,7 +13,7 @@ from finlab import data
 import os
 from io import StringIO
 
-rootpath= "D:/project/finlabexportdata/"
+rootpath= "D:/project/stockDataLab/"
 
 yesterday = fm.getLastFileDate(f"{rootpath}/volumeData", "ma_")
 

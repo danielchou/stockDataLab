@@ -9,3 +9,4 @@ chatGPT_apikey.txt
 data/old
 stock.db
 build.whl/
+__pycache__/

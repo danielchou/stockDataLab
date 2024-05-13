@@ -14,7 +14,7 @@ from io import StringIO
 from datetime import datetime
 import time
 
-rootpath= "D:/project/finlabexportdata/"
+rootpath= "D:/project/stockDataLab/"
 
 yesterday = fm.getLastFileDate(f"{rootpath}/volumeData", "ma_")
 

@@ -4,7 +4,7 @@ import _beowFmt as fm
 
 import os
 
-rootpath= "D:/project/finlabexportdata"
+rootpath= "D:/project/stockDataLab"
 
 last1_file_name = fm.getLastFileDate(f"{rootpath}/xq_import", "量比大")  #PROD
 last2_file_name = fm.getLast2FileDate(f"{rootpath}/xq_import", "量比大")
