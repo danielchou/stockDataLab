@@ -1,0 +1,11 @@
+C:\Python310\python.exe
+
+D:\project\finlabexportdata\step1.1.getStockName.py
+D:\project\finlabexportdata\step1.2.startFinlabData.py
+D:\project\finlabexportdata\step2.1.stockGet5Min_2023.py
+D:\project\finlabexportdata\step2.2.get5KCrossEMA.py
+D:\project\finlabexportdata\step3.sentByFtp.py
+D:\project\finlabexportdata\step4.findDiffInTime.py
+
+D:\project\finlabexportdata
+D:\project]finlabexportdata\monthly.fetchOtherData.py

@@ -1,0 +1,18 @@
+{
+    "notebook.output.textLineLimit": 90,
+    "files.associations": {
+        "*.templ": "templ",
+        "**/template/**": "templ"
+    },
+    "todohighlight.keywordsPattern": "\\$pt_([\da-zA-Z0-9_]+)",
+    "todohighlight.defaultStyle": {
+        "color": "#333",
+        "backgroundColor": "#8CDCFE",
+        "cursor": "pointer",
+        "border": "1px solid #eee",
+        "borderRadius": "2px",
+        "margin": "2px",
+        "isWholeLine": false,
+        //other styling properties goes here ... 
+    },
+}
