@@ -1,5 +1,6 @@
 import ftplib
 import time
+import os
 
 def upload_file_to_ftp(hostname, username, password, local_file_path, remote_file_path):
     try:
@@ -30,11 +31,12 @@ password = 'Apple005'
 # 設定本地檔案路徑和遠端檔案路徑
 o_nowDate = time.strftime("%Y%m%d", time.localtime()) 
 print(o_nowDate)
-local_file_path = f"D:/project/stockDataLab/data/json/turnover_{o_nowDate}.json"
+current_path = os.getcwd()
+local_file_path = f"{current_path}/data/json/turnover_{o_nowDate}.json"
 remote_file_path = 'static/turnover_20240105.json'
 upload_file_to_ftp(hostname, username, password, local_file_path, remote_file_path) # 呼叫上傳檔案函式
 
 # 開收、跳空、Kbar、預估量、周轉率資料
-local_file_path = f"D:/project/stockDataLab/data/json/all_info.json"
+local_file_path = f"{current_path}/data/json/all_info.json"
 remote_file_path = 'static/all_info.json'
 upload_file_to_ftp(hostname, username, password, local_file_path, remote_file_path)

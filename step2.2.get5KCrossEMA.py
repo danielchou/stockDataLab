@@ -13,7 +13,7 @@ from finlab import data
 import os
 from io import StringIO
 
-rootpath= "D:/project/stockDataLab/"
+current_path = os.getcwd()
 headers = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36(KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"
 }
@@ -27,7 +27,7 @@ headers = {
 # dfn["id"] = dfn["id"].astype("string")
 
 ## 取股票名稱 #-----------------------------------------------------------------
-dfStockName = pd.read_csv(f"{rootpath}/paras/股票名稱.csv")
+dfStockName = pd.read_csv(f"{current_path}/paras/股票名稱.csv")
 dfStockName.columns = ["id", "name","market"]
 dfStockName["id"] = dfStockName["id"].astype('str')
 
@@ -71,5 +71,5 @@ for i in range(0, len(df2), batch_size):
     data_to_insert = [tuple(record) for record in rec_array]
 
     # 在這裡換成你的實際資料庫寫入函數
-    # bs.ExecuteSqllite("D:\\project\\stockDataLab\\stock.db", sql_command, data_to_insert)
+    # bs.ExecuteSqllite("D:\\stock.db", sql_command, data_to_insert)
 

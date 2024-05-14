@@ -40,8 +40,9 @@ async def getYuantaETFDataAsync(stockId):
     df = pd.DataFrame(eft_data) # 将字典列表转换为 DataFrame
     # print(df)
 
-
-    rootPath= "D:/project/stockDataLab/Lab001_ETF"  #已經改過
+    
+    rootPath = os.getcwd()  #已經改過
+    
     nowDate = time.strftime("%Y%m%d", time.localtime())
     df.to_csv(f"{rootPath}/data/{stockId}/{nowDate}.csv", index=False, sep='\t') #儲存成CSV
 

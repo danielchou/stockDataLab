@@ -8,4 +8,4 @@ D:\project\stockDataLab\step3.sentByFtp.py
 D:\project\stockDataLab\step4.findDiffInTime.py
 
 D:\project\stockDataLab
-D:\project]stockDataLab\monthly.fetchOtherData.py
+D:\project\stockDataLab\monthly.fetchOtherData.py

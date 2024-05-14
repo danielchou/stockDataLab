@@ -1,8 +1,10 @@
 # %%
 ## 找出今天數量，各種均量
-rootpath= "D:/project/stockDataLab/"
+import os
 import finlab
-finlab.login(open(f"{rootpath}config.txt", "r").read())
+
+current_path= os.getcwd()
+finlab.login(open(f"{current_path}/config.txt", "r").read())
 
 from finlab import data
 import pandas as pd
@@ -58,4 +60,4 @@ import time
 today = date.today()                        # 取得今天的日期
 yesterday = today - timedelta(days=1)       # 計算昨天的日期
 yesterday = yesterday.strftime("%Y%m%d")    # 將日期轉換為指定的格式
-fm.write_LogFile(f"{rootpath}volumeData/ma_{yesterday}.csv", s1)
+fm.write_LogFile(f"{current_path}/volumeData/ma_{yesterday}.csv", s1)

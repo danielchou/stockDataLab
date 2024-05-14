@@ -7,18 +7,16 @@ from bs4 import BeautifulSoup
 import json
 import _beowFmt as fm
 import _beowSet as bs
-
-
 from finlab import data
 import os
 from io import StringIO
 
-rootpath= "D:/project/stockDataLab/"
+current_path = os.getcwd()
 
-yesterday = fm.getLastFileDate(f"{rootpath}/volumeData", "ma_")
+yesterday = fm.getLastFileDate(f"{current_path}/volumeData", "ma_")
 
-df5k = pd.read_json(f"{rootpath}paras/mapping5K.json")
-dfv = pd.read_csv(f"{rootpath}volumeData/ma_{yesterday}.csv")
+df5k = pd.read_json(f"{current_path}/paras/mapping5K.json")
+dfv = pd.read_csv(f"{current_path}/volumeData/ma_{yesterday}.csv")
 dfv["id"] = dfv["id"].astype("string")
 # dfv = dfv.drop(columns=['close'])
 #print(dfv[dfv["id"] == "3265"])
@@ -47,5 +45,5 @@ stockNameStr = ""
 
 for c in dfn["comp"].tolist():
     stockNameStr += f"{c}\n"
-fm.write_LogFile(f"{rootpath}paras/股票名稱.csv", stockNameStr)  
+fm.write_LogFile(f"{current_path}/paras/股票名稱.csv", stockNameStr)  
 # %%

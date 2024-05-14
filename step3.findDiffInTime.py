@@ -1,16 +1,14 @@
-#------------------------------------------------------
 import pandas as pd
 import _beowFmt as fm 
-
 import os
 
-rootpath= "D:/project/stockDataLab"
+current_path = os.getcwd()
 
-last1_file_name = fm.getLastFileDate(f"{rootpath}/xq_import", "量比大")  #PROD
-last2_file_name = fm.getLast2FileDate(f"{rootpath}/xq_import", "量比大")
+last1_file_name = fm.getLastFileDate(f"{current_path}/xq_import", "量比大")  #PROD
+last2_file_name = fm.getLast2FileDate(f"{current_path}/xq_import", "量比大")
 
-df1 = pd.read_csv(f"{rootpath}/xq_import/{last1_file_name}.csv")
-df2 = pd.read_csv(f"{rootpath}/xq_import/{last2_file_name}.csv")
+df1 = pd.read_csv(f"{current_path}/xq_import/{last1_file_name}.csv")
+df2 = pd.read_csv(f"{current_path}/xq_import/{last2_file_name}.csv")
 list1 = df1.columns.tolist()[:-1]
 list2 = df2.columns.tolist()[:-1]
 
@@ -29,13 +27,13 @@ df_diff = pd.DataFrame(stock_diff, columns = ["stockId"])
 df_diff["time"] = last1_file_name.removesuffix("_量比大").removeprefix("量價型態2024")   # DEV
 
 ## 取股票名稱 #--------------------------------------------------
-dfStockName = pd.read_csv(f"{rootpath}/paras/股票名稱.csv")
+dfStockName = pd.read_csv(f"{current_path}/paras/股票名稱.csv")
 dfStockName.columns = ["stockId", "中文名稱","market"]
 dfStockName["stockId"] = dfStockName["stockId"].astype('str')
 ## -------------------------------------------------------------
 
 dfc = pd.merge(df_diff, dfStockName, left_on="stockId", right_on="stockId")
-csv_file_path = f"{rootpath}/xq_turnover/{last_date}_turnover.csv"
+csv_file_path = f"{current_path}/xq_turnover/{last_date}_turnover.csv"
 
 if not os.path.exists(csv_file_path) or os.path.getsize(csv_file_path) == 0:
   df_combined = pd.DataFrame(columns=['stockId', '中文名稱', 'time']).astype({'stockId': int, '中文名稱': str, 'time': str})
@@ -55,11 +53,11 @@ ss= ""
 df4 = df_combined3["stockId"].tolist()
 for d in df4:
   ss += f"{d}.TW,"
-fm.write_LogFile(f"{rootpath}/xq_import_today/{last_date}_量比大.csv", ss)
+fm.write_LogFile(f"{current_path}/xq_import_today/{last_date}_量比大.csv", ss)
 
 
 # print(f"?? {last_date}")
-js_file_path = f"{rootpath}/data/json/turnover_{last_date}.json"
+js_file_path = f"{current_path}/data/json/turnover_{last_date}.json"
 
 from datetime import datetime
 

@@ -14,12 +14,12 @@ from io import StringIO
 from datetime import datetime
 import time
 
-rootpath= "D:/project/stockDataLab/"
+current_path = os.getcwd()
 
-yesterday = fm.getLastFileDate(f"{rootpath}/volumeData", "ma_")
+yesterday = fm.getLastFileDate(f"{current_path}/volumeData", "ma_")
 
-df5k = pd.read_json(f"{rootpath}paras/mapping5K.json")
-dfv = pd.read_csv(f"{rootpath}volumeData/ma_{yesterday}.csv")
+df5k = pd.read_json(f"{current_path}/paras/mapping5K.json")
+dfv = pd.read_csv(f"{current_path}/volumeData/ma_{yesterday}.csv")
 dfv["id"] = dfv["id"].astype("string")
 
 ### 計算量比參數 ###
@@ -32,7 +32,7 @@ def getRate5K():
     return Rate5k
 
 ## 取股票名稱 #-----------------------------------------------
-dfStockName = pd.read_csv(f"{rootpath}/paras/股票名稱.csv")
+dfStockName = pd.read_csv(f"{current_path}/paras/股票名稱.csv")
 dfStockName.columns = ["id", "name","market"]
 dfStockName["id"] = dfStockName["id"].astype('str')
 ## ----------------------------------------------------------
@@ -97,9 +97,9 @@ s1 ,s2 ,s3, o_nowDate, o_nowTime = '', '', '', time.strftime("%Y%m%d", nowtime) 
 df4 = df2a["id"].tolist()
 for d in df4:
   s2 += f"{d}.TW,"
-fm.write_LogFile(f"{rootpath}xq_import/{o_nowTime}_量比大.csv", s2)
+fm.write_LogFile(f"{current_path}/xq_import/{o_nowTime}_量比大.csv", s2)
 
-all_info_path, dtm1 = f"{rootpath}data/json/all_info.json", datetime.now()
+all_info_path, dtm1 = f"{current_path}/data/json/all_info.json", datetime.now()
 
 # 刪除文件（如果存在）
 if os.path.exists(all_info_path):
@@ -119,7 +119,3 @@ dtm2 = datetime.now()
 time_difference = dtm2 - dtm1
 milliseconds_difference = time_difference.total_seconds() * 1000
 print(f"產生all stock info的時間，{milliseconds_difference}毫秒")
-
-
-
-
