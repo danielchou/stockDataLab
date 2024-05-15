@@ -31,7 +31,9 @@ password = 'Apple005'
 # 設定本地檔案路徑和遠端檔案路徑
 o_nowDate = time.strftime("%Y%m%d", time.localtime()) 
 print(o_nowDate)
-current_path = os.getcwd()
+
+# current_path = os.getcwd()
+current_path = "D:\project\stockDataLab"
 local_file_path = f"{current_path}/data/json/turnover_{o_nowDate}.json"
 remote_file_path = 'static/turnover_20240105.json'
 upload_file_to_ftp(hostname, username, password, local_file_path, remote_file_path) # 呼叫上傳檔案函式

@@ -3,8 +3,8 @@
 import os
 import finlab
 
-current_path= os.getcwd()
-finlab.login(open(f"{current_path}/config.txt", "r").read())
+current_path = "D:\project\stockDataLab"
+finlab.login(open(f"{current_path}\config.txt", "r").read())
 
 from finlab import data
 import pandas as pd

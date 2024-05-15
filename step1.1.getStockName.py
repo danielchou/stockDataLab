@@ -11,7 +11,8 @@ from finlab import data
 import os
 from io import StringIO
 
-current_path = os.getcwd()
+# current_path = os.getcwd()
+current_path = "D:\project\stockDataLab"
 
 yesterday = fm.getLastFileDate(f"{current_path}/volumeData", "ma_")
 

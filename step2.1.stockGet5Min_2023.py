@@ -14,7 +14,7 @@ from io import StringIO
 from datetime import datetime
 import time
 
-current_path = os.getcwd()
+current_path = "D:\project\stockDataLab"
 
 yesterday = fm.getLastFileDate(f"{current_path}/volumeData", "ma_")
 
