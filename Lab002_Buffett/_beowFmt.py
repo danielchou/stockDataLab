@@ -237,18 +237,3 @@ def FtpFile(local_file_path, remote_file_path):
         # 關閉FTP連線
         ftp.quit()
 
-
-
-from datetime import date
-
-def trans2CSVfile(df, filePath):
-    dff = df.iloc[-1:].transpose()
-    dff["stockId"] = dff.index
-    dff.columns = ["val", "stockId"]
-    dff = dff[ (dff["stockId"].str.len() == 4) & (dff["val"] == True) ]
-
-    nowDate, ss = date.today().strftime("%Y%m%d"), ''
-
-    for c in dff["stockId"].tolist():
-        ss += f"{c}.TW,"
-    write_LogFile(f"{filePath}{nowDate}.csv", ss) 

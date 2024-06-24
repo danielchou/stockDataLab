@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .box {
+      display: flex;
+      flex-wrap: wrap;
+      width: 1000px;
+      height: 100px;
+    }
+
+    .box-item {
+      width: 10px;
+      height: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <!-- 使用 JavaScript 動態產生 100 個小的 div 元素 -->
+  <script>
+    for (let i = 0; i < 100; i++) {
+      // 隨機產生一種顏色
+      const color = `rgb(${Math.random() * 256}, ${Math.random() * 256}, ${Math.random() * 256}`;
+
+      // 動態產生一個小的 div 元素，並將顏色應用於其中
+      const boxItem = document.createElement('div');
+      boxItem.className = 'box-item';
+      boxItem.style.backgroundColor = color;
+
+      // 將小的 div 元素添加到大的 div 元素中
+      document.querySelector('.box').appendChild(boxItem);
+    }
+  </script>
+</div>
+
+</body>
+</html>

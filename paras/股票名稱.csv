@@ -176,6 +176,7 @@
 1616,億泰,Listed
 1617,榮星,Listed
 1618,合機,Listed
+1623,大東電,Emerging
 1626,艾美特-KY,Listed
 1701,中化,Listed
 1702,南僑,Listed
@@ -995,7 +996,7 @@
 4414,如興,Listed
 4416,三圓,OTC
 4417,金洲,OTC
-4419,元勝,OTC
+4419,皇家美食,OTC
 4420,光明,OTC
 4426,利勤,Listed
 4430,耀億,OTC
@@ -1242,7 +1243,6 @@
 5364,力麗店,OTC
 5371,中光電,OTC
 5381,合正,OTC
-5383,金利,OTC
 5386,青雲,OTC
 5388,中磊,Listed
 5392,能率,OTC
@@ -1499,7 +1499,7 @@
 6417,韋僑,OTC
 6418,詠昇,OTC
 6419,京晨科,OTC
-6423,億而得-創,Emerging
+6423,億而得-創,Listed
 6425,易發,OTC
 6426,統新,Listed
 6428,淘米,Emerging
@@ -1579,7 +1579,6 @@
 6559,研晶,Emerging
 6560,欣普羅,OTC
 6561,是方,OTC
-6562,聯亞藥,Emerging
 6564,安特羅,Emerging
 6565,物聯,Emerging
 6568,宏觀,OTC
@@ -1619,7 +1618,7 @@
 6613,朋億*,OTC
 6615,慧智,OTC
 6616,特昇-KY,OTC
-6617,共信-KY,Emerging
+6617,共信-KY,OTC
 6618,永虹先進,Emerging
 6620,漢達,Emerging
 6621,華宇藥,Emerging
@@ -1629,7 +1628,7 @@
 6626,唯數,Emerging
 6629,泰金-KY,OTC
 6634,欣耀,Emerging
-6637,醫影,Emerging
+6637,醫影,OTC
 6638,沅聖,Emerging
 6639,源大環能,Emerging
 6640,均華,OTC
@@ -1725,7 +1724,7 @@
 6767,台微醫,OTC
 6768,志強-KY,Listed
 6770,力積電,Listed
-6771,平和環保,Emerging
+6771,平和環保-創,Listed
 6775,穎台科技,Emerging
 6776,展碁國際,Listed
 6780,學習王,Emerging
@@ -1741,7 +1740,7 @@
 6791,虎門科技,OTC
 6792,詠業,Listed
 6793,天力離岸,Emerging
-6794,向榮生技,Emerging
+6794,向榮生技-創,Listed
 6796,晉弘,Listed
 6797,圓點奈米,Emerging
 6798,展逸,Emerging
@@ -1798,7 +1797,7 @@
 6865,偉康科技,OTC
 6867,坦德科技,Emerging
 6868,采威國際,Emerging
-6869,雲豹能源-創,Listed
+6869,雲豹能源,Listed
 6870,騰雲,OTC
 6872,浩宇生醫,Emerging
 6873,泓德能源-創,Listed
@@ -1808,11 +1807,12 @@
 6877,鏵友益,OTC
 6878,歐付寶,Emerging
 6879,大江基因,Emerging
-6881,潤德,Emerging
+6881,潤德,OTC
 6882,甲尚,Emerging
 6884,海柏特,Emerging
 6885,全福生技,Emerging
 6886,遠東生技,Emerging
+6890,來億-KY,Listed
 6891,樂迦再生,Emerging
 6892,台寶生醫,Emerging
 6894,衛司特,OTC
@@ -1821,7 +1821,7 @@
 6899,創為精密,OTC
 6901,鑽石投資,Listed
 6902,走著瞧-創,Listed
-6903,巨漢,Emerging
+6903,巨漢,OTC
 6904,伯鑫,OTC
 6906,現觀科,Listed
 6908,宏碁遊戲,Emerging
@@ -1842,7 +1842,7 @@
 6925,意藍,Emerging
 6926,聖安生醫,Emerging
 6927,聯合聚晶,Emerging
-6928,攸泰科技,Emerging
+6928,攸泰科技,Listed
 6929,佑全,OTC
 6931,青松健康,Emerging
 6932,水星生醫*,Emerging
@@ -1857,8 +1857,8 @@
 6945,圓祥生技,Emerging
 6947,台鎔科技,Emerging
 6949,沛爾生醫-創,Listed
-6951,青新,Emerging
-6952,大武山,Emerging
+6951,青新-創,Listed
+6952,大武山,Listed
 6953,家碩,OTC
 6955,邦睿生技,Emerging
 6958,日盛台駿,Emerging
@@ -1871,6 +1871,7 @@
 6973,永立榮,Emerging
 6976,育世博-KY,Emerging
 6977,聯純,Emerging
+6979,勝釩,Emerging
 6980,鐳洋科技,Emerging
 6982,大井泵浦,Emerging
 6983,華洋精機,Emerging
@@ -1932,7 +1933,12 @@
 7732,金興精密,Emerging
 7734,印能科技,Emerging
 7736,虎山,Emerging
+7738,東聯互動,Emerging
 7743,金利食安,Emerging
+7747,昕奇雲端,Emerging
+7750,新代,Emerging
+7751,竑騰,Emerging
+7752,世紀樺欣,Emerging
 8011,台通,Listed
 8016,矽創,Listed
 8021,尖點,Listed
