@@ -248,7 +248,7 @@ def trans2CSVfile(df, filePath):
     dff = dff[ (dff["stockId"].str.len() == 4) & (dff["val"] == True) ]
 
     nowDate, ss = date.today().strftime("%Y%m%d"), ''
-
+    print(f"匯出共 {len(dff)} 檔股票")
     for c in dff["stockId"].tolist():
         ss += f"{c}.TW,"
     write_LogFile(f"{filePath}{nowDate}.csv", ss) 

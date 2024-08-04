@@ -88,7 +88,7 @@ dfc.replace([np.inf, -np.inf], 0, inplace=True)
 dfc["json"] = dfc.apply(fm.fmt_all_infor_stock, axis=1)
 print(dfc["json"])
 ## 策略2:找出周轉率高 、不包含興櫃公司
-dfc2 = dfc[ (dfc["yVolume"] > 2000) & (dfc["close"] < 600) & (dfc["amp"] > 2) & (dfc["量比"] >= 2) & (dfc["預估量"] > 1000 ) & (dfc["周轉率"] > 1.5) & (dfc["market"] != "Emerging") ]
+dfc2 = dfc[ (dfc["yVolume"] > 10) & (dfc["close"] < 600) & (dfc["amp"] > 2) & (dfc["量比"] >= 2) & (dfc["預估量"] > 900 ) & (dfc["周轉率"] > 0.8) & (dfc["market"] != "Emerging") ]
 df2a   = dfc2.loc[:, ["id","market","name","yClose","low","open","close","jump","amp","jumpRate","yVolume","預估量","量比","週量比","月量比","季量比","半年量比","年量比","周轉率","量比周轉"]].sort_values("周轉率", ascending=False)
 
 nowtime = time.localtime()
