@@ -252,3 +252,4 @@ def trans2CSVfile(df, filePath):
     for c in dff["stockId"].tolist():
         ss += f"{c}.TW,"
     write_LogFile(f"{filePath}{nowDate}.csv", ss) 
+
