@@ -23,12 +23,25 @@ def process_dde_data(columns, data, sep):
     
     return pd.DataFrame(processed_data, columns=columns)
 
+def calcX(r):
+    volRate, turnOver, whaleSpreadRatio, yoy, mom, net = r["量比"], r["換手率%"], r["大戶差比"], r['yoy'],r['mom'],r['net']
+    volRate2, yoymom, net2 = 1, 1, 1
+    
+    if (yoy > 2.1 and mom > 2.1):
+        yoymom = 2
+    if (net > 20):
+        net2 = round(net/20,2)
+    if volRate >= 1.8:
+        volRate2 = volRate
+
+    return round(volRate2 * turnOver * whaleSpreadRatio * yoymom * net2 / 100 , 1)
+
 def fmt_xq2json(r):
     stockId, stockName,k, low, high, close, yesterdayClose, amplitude, estValue, totalValue, volRate, turnOver,\
           roe, ioRate, market, vMa5, ln, whaleSpread, whaleSpreadRatio, \
-          cap, pe, pb, yoy, mom, net, dvd, info, shh, inv = r["代碼"], r["商品"], r["多空"], r["最低"], r["最高"], r["成交"], r["昨收"], r["漲幅%"], r["估計量"],r["總量"], r["量比"], r["換手率%"], \
+          cap, pe, pb, yoy, mom, net, dvd, info, shh, inv, x, mn = r["代碼"], r["商品"], r["多空"], r["最低"], r["最高"], r["成交"], r["昨收"], r["漲幅%"], r["估計量"],r["總量"], r["量比"], r["換手率%"], \
             r["ROE%"], r["內外盤%"], r["market"], r["五日量比"], r["融資使用率%"], r["大戶差2"], r["大戶差比"], \
-            r["cap"],r["pe"],r['pb'],r['yoy'],r['mom'],r['net'],r["dvd"],r["info"],r['shh'],r['inv']
+            r["cap"],r["pe"],r['pb'],r['yoy'],r['mom'],r['net'],r["dvd"],r["info"],r['shh'],r['inv'],r['x'],r['mm']
    
     # ln = "" if (ln == '--') else ln   # Finance Used Ratio 融資使用率
     roe = 0 if (roe == '--') else roe
@@ -48,7 +61,7 @@ def fmt_xq2json(r):
         print(f"An error occurred: {e}")
         jmp = 0
     
-    sql = f'"id":{stockId},"n":"{stockName}","k":{k},"j":{jmp},"c":{close},"yc":{yesterdayClose},"v":{totalValue},"amp":{amplitude},"tV":{totalValue},"vR":{volRate},"turOv":{turnOver},"roe":{roe},"ioR":{ioRate},"ind":"{market}","v5":{vMa5},"ln":"{ln}","wts":{whaleSpread},"wtr":{whaleSpreadRatio},"pe":{pe},"pb":{pb},"yy":{yoy},"mm":{mom},"nt":{net},"dd":"{dvd}","fo":"{info}","sh":"{shh}","iv":"{inv}"'
+    sql = f'"id":{stockId},"n":"{stockName}","k":{k},"j":{jmp},"c":{close},"yc":{yesterdayClose},"v":{totalValue},"amp":{amplitude},"tV":{totalValue},"vR":{volRate},"turOv":{turnOver},"roe":{roe},"ioR":{ioRate},"ind":"{market}","v5":{vMa5},"ln":"{ln}","wts":{whaleSpread},"wtr":{whaleSpreadRatio},"pe":{pe},"pb":{pb},"yy":{yoy},"mm":{mom},"nt":{net},"dd":"{dvd}","fo":"{info}","sh":"{shh}","iv":"{inv}","x":{x},"mn":"{mn}"'
     return "{" + sql + "},"
 
 
@@ -101,7 +114,7 @@ def Main(topic, ddeDict, stock_Ids, sep):
        
         # df2 = df[(df['大戶差2'] > 0.7) & (df['大戶差比'] > 10)]
         # df2 = df[(df['大戶差比'] > 15) | (df['大戶差比'] < -15)]
-        df2 = df[((df['大戶差比'] > 6) & (df['大戶差2'] >= 0.8)) | ((df['大戶差比'] < -6) & (df['大戶差2'] <= -1.1))]
+        df2 = df[((df['大戶差比'] > 6) & (df['大戶差2'] >= 0.8)) | ((df['大戶差比'] < -1) & (df['大戶差2'] <= -0.6))]
         
         grouped = df2.groupby(['market','多空']).agg({
             '量比': ['mean','count'],
@@ -111,7 +124,7 @@ def Main(topic, ddeDict, stock_Ids, sep):
         grouped.columns = ['平均量比', '筆數', '換手率%', '大戶買總額']
         grouped = grouped.round(1)
         
-        df_group = grouped[grouped['平均量比'] >= 0.5].sort_values(by='大戶買總額', ascending=False)
+        df_group = grouped[grouped['平均量比'] >= 1.8].sort_values(by='大戶買總額', ascending=False)
         # df_group = grouped[grouped['平均大戶差比'] >= 10].sort_values(by='平均量比', ascending=False)
         # 統計題材之後，產出對應的股票名稱，以量比由大到小排列，可快速瀏覽...
         df_group['相關股票明細'] = df2.groupby(['market','多空']).apply(lambda x: ','.join(x.sort_values(by='量比', ascending=False)['商品']))
@@ -128,9 +141,11 @@ def Main(topic, ddeDict, stock_Ids, sep):
         financeData_file = r'D:\project\stockDataLab\Lab\data\\webJson\\financeData.csv'
         financeData = pd.read_csv(financeData_file, encoding='utf-8')
         financeData = financeData.fillna('')
-        financeData.columns = ["id","cap","pe","pb","yoy","mom","net","dvd","info","shh","inv"]
+        financeData.columns = ["id","cap","pe","pb","yoy","mom","net","dvd","info","shh","mm","inv"]
         # print(financeData.head(60))
         df = pd.merge(df, financeData, left_on="ID", right_on="id")  ## 結合股票名稱
+        df['x'] = df.apply(calcX, axis=1)
+        df['mm'] = df['mm'].str.replace('2024/', '') #營收月份 2024/08
         # print(df.head(50))
 
         df['json']= df.apply(fmt_xq2json, axis = 1) 
