@@ -23,10 +23,14 @@ def upload_file_to_ftp(hostname, username, password, local_file_path, remote_fil
         # 關閉FTP連線
         ftp.quit()
 
-# 設定遠端主機的FTP資訊
-hostname = 'win5181.site4now.net'
-username = 'danielchou-beow2'
-password = 'Apple005'
+from dotenv import load_dotenv
+import os
+
+load_dotenv() # 加載 .env 文件
+
+hostname = os.getenv('FTP_HOSTNAME')
+username = os.getenv('FTP_USERNAME')
+password = os.getenv('FTP_PASSWORD')
 
 # 設定本地檔案路徑和遠端檔案路徑
 o_nowDate = time.strftime("%Y%m%d", time.localtime()) 

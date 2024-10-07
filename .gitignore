@@ -10,3 +10,4 @@ data/old
 stock.db
 build.whl/
 __pycache__/
+.env

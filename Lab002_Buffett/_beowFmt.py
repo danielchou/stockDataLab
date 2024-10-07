@@ -212,12 +212,17 @@ def fmtSql_stockb(r):
 
 import ftplib
 import time
+from dotenv import load_dotenv
+import os
+
+load_dotenv() # 加載 .env 文件
+
+hostname = os.getenv('FTP_HOSTNAME')
+username = os.getenv('FTP_USERNAME')
+password = os.getenv('FTP_PASSWORD')
+
 def FtpFile(local_file_path, remote_file_path):
     try:
-        # 設定遠端主機的FTP資訊
-        hostname = 'win5181.site4now.net'
-        username = 'danielchou-beow2'
-        password = 'Apple005'
         # 連線到遠端FTP伺服器
         ftp = ftplib.FTP(hostname)
         ftp.login(username, password)

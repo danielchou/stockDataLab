@@ -46,7 +46,7 @@ def to_billion(value):
         number /= 100000000  # 假設無單位時為元，1億 = 100000000元
 
     # 四捨五入到小數點後三位
-    return round(number, 2)
+    return round(number, 1)
 
 def get_first_item(text):
     if ',' in text:

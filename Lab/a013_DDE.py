@@ -30,7 +30,7 @@ def calcX(r):
     if (yoy > 2.1 and mom > 2.1):
         yoymom = 2
     if (net > 20):
-        net2 = round(net/20,2)
+        net2 = round(net/20,1)
     if volRate >= 1.8:
         volRate2 = volRate
 
@@ -55,13 +55,13 @@ def fmt_xq2json(r):
         if low == '0' or high == '0' or yesterdayClose == '0':
             jmp = 0
         else:
-            jmp = round(low - yesterdayClose,2) if amplitude > 0 else round(yesterdayClose - high,2)
+            jmp = round(low - yesterdayClose,1) if amplitude > 0 else round(yesterdayClose - high,1)
     except Exception as e:
         print(low, high, yesterdayClose)
         print(f"An error occurred: {e}")
         jmp = 0
     
-    sql = f'"id":{stockId},"n":"{stockName}","k":{k},"j":{jmp},"c":{close},"yc":{yesterdayClose},"v":{totalValue},"amp":{amplitude},"tV":{totalValue},"vR":{volRate},"turOv":{turnOver},"roe":{roe},"ioR":{ioRate},"ind":"{market}","v5":{vMa5},"ln":"{ln}","wts":{whaleSpread},"wtr":{whaleSpreadRatio},"pe":{pe},"pb":{pb},"yy":{yoy},"mm":{mom},"nt":{net},"dd":"{dvd}","fo":"{info}","sh":"{shh}","iv":"{inv}","x":{x},"mn":"{mn}"'
+    sql = f'"id":{stockId},"n":"{stockName}","k":{k},"j":{jmp},"c":{close},"yc":{yesterdayClose},"v":{totalValue},"vE":{estValue},"amp":{amplitude},"vR":{volRate},"turOv":{turnOver},"roe":{roe},"ioR":{ioRate},"ind":"{market}","v5":{vMa5},"ln":"{ln}","wts":{whaleSpread},"wtr":{whaleSpreadRatio},"pe":{pe},"pb":{pb},"yy":{yoy},"mm":{mom},"nt":{net},"dd":"{dvd}","fo":"{info}","sh":"{shh}","iv":"{inv}","x":{x},"mn":"{mn}"'
     return "{" + sql + "},"
 
 
@@ -99,8 +99,8 @@ def Main(topic, ddeDict, stock_Ids, sep):
         df['總量'] = df['總量'].astype(int)
         df['多空'] = df['漲幅%'].apply(lambda x: 1 if x > 0 else 0)
         df['大戶差2'] =df['大戶差'].apply(bwdde.to_billion)           #全部改以億為單位
-        df['五日量比'] = df.apply(lambda r: round(float(r['總量']) / float(r['五日均量']), 2) if r['估計量'] == '--' and float(r['五日均量']) != 0 else
-                           round(float(r['估計量']) / float(r['五日均量']), 2) if float(r['五日均量']) != 0 else
+        df['五日量比'] = df.apply(lambda r: round(float(r['總量']) / float(r['五日均量']), 1) if r['估計量'] == '--' and float(r['五日均量']) != 0 else
+                           round(float(r['估計量']) / float(r['五日均量']), 1) if float(r['五日均量']) != 0 else
                            0, axis=1)
         
         
@@ -124,16 +124,19 @@ def Main(topic, ddeDict, stock_Ids, sep):
         grouped.columns = ['平均量比', '筆數', '換手率%', '大戶買總額']
         grouped = grouped.round(1)
         
-        df_group = grouped[grouped['平均量比'] >= 1.8].sort_values(by='大戶買總額', ascending=False)
+        df_group = grouped[grouped['大戶買平均'] >= 1.2].sort_values(by='大戶買平均', ascending=False)
         # df_group = grouped[grouped['平均大戶差比'] >= 10].sort_values(by='平均量比', ascending=False)
         # 統計題材之後，產出對應的股票名稱，以量比由大到小排列，可快速瀏覽...
         df_group['相關股票明細'] = df2.groupby(['market','多空']).apply(lambda x: ','.join(x.sort_values(by='量比', ascending=False)['商品']))
         df_group = df_group.reset_index() # 重置索引，使market成為一個欄位
         df_group['json'] = df_group.apply(fmt_group_json, axis=1)
-        # print(df_group)
+
+        #代表性不夠的就予以排除
+        df_filtered = df_group[~((df_group['平均量比'] <= 1.2) & (df_group['筆數'] == 1))]
+        print(df_filtered)
 
         targe_file = r"D:\project\stockDataLab\Lab\data\webJson\currStockMarket.json"
-        ss = ''.join(df_group['json'].fillna('').astype(str))[:-1]
+        ss = ''.join(df_filtered['json'].fillna('').astype(str))[:-1]
         fm.write_LogFile(targe_file, f"[{ss}]")
         fm.FtpFile(targe_file, 'static/currStockMarket.json')
 
