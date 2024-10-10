@@ -237,7 +237,7 @@ def Main(topic, columns, ddeItems, sep):
 
 
 # 追蹤股票號碼
-stock_Ids = open("a013_stockIds", "r").read().split(",")
+stock_Ids = open("data\\webJson\\a013_stockIds.txt", "r").read().split(",")
 
  # 假設每個項目是一個字符串，包含所有字段
 QuoteColumns = ['ID','Name','Price','Low','High','ROE','PreClose','TotalVolume',

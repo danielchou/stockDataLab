@@ -66,9 +66,9 @@ def fmt_xq2json(r):
 
 
 def fmt_group_json(r):
-    market, vrMean, turnOverMean, k, count, bigSum, details = r['market'], r['平均量比'], r['換手率%'], r['多空'], r['筆數'], r['大戶買總額'], r['相關股票明細']
+    market, vrMean, turnOverMean, k, count, bigSum, bigCount, details = r['market'], r['平均量比'], r['換手率%'], r['多空'], r['筆數'], r['大戶買總額'],r['大戶買多的股票數量'], r['相關股票明細']
         
-    sql = f'"market":"{market}","vmn":{vrMean},"tov":{turnOverMean},"k":{k},"cc":{count},"sum":{bigSum},"dls":"{details}"'
+    sql = f'"market":"{market}","vmn":{vrMean},"tov":{turnOverMean},"k":{k},"cc":{count},"sum":{bigSum},"bigCC":{bigCount},"dls":"{details}"'
     # sql = f'"market":"{market}","dls":"{details}"'
     return "{" + sql + "},"
 
@@ -119,12 +119,12 @@ def Main(topic, ddeDict, stock_Ids, sep):
         grouped = df2.groupby(['market','多空']).agg({
             '量比': ['mean','count'],
             '換手率%': ['mean'],
-            '大戶差2': ['sum'],
+            '大戶差2': ['sum','mean','count']
         })
-        grouped.columns = ['平均量比', '筆數', '換手率%', '大戶買總額']
+        grouped.columns = ['平均量比', '筆數', '換手率%', '大戶買總額','大戶買平均','大戶買多的股票數量']
         grouped = grouped.round(1)
         
-        df_group = grouped[grouped['大戶買平均'] >= 1.2].sort_values(by='大戶買平均', ascending=False)
+        df_group = grouped[grouped['平均量比'] >= 1.1].sort_values(by='大戶買平均', ascending=False)
         # df_group = grouped[grouped['平均大戶差比'] >= 10].sort_values(by='平均量比', ascending=False)
         # 統計題材之後，產出對應的股票名稱，以量比由大到小排列，可快速瀏覽...
         df_group['相關股票明細'] = df2.groupby(['market','多空']).apply(lambda x: ','.join(x.sort_values(by='量比', ascending=False)['商品']))
@@ -133,7 +133,8 @@ def Main(topic, ddeDict, stock_Ids, sep):
 
         #代表性不夠的就予以排除
         df_filtered = df_group[~((df_group['平均量比'] <= 1.2) & (df_group['筆數'] == 1))]
-        print(df_filtered)
+        df_filtered = df_filtered[~((df_filtered['多空'] == 1) & (df_filtered['大戶買總額'] < 0))]
+        # print(df_filtered)
 
         targe_file = r"D:\project\stockDataLab\Lab\data\webJson\currStockMarket.json"
         ss = ''.join(df_filtered['json'].fillna('').astype(str))[:-1]
@@ -161,7 +162,7 @@ def Main(topic, ddeDict, stock_Ids, sep):
 
 
 # 追蹤股票號碼
-stock_Ids = open("a013_stockIds", "r").read().split(",")
+stock_Ids = open("data\\webJson\\a013_stockIds.txt", "r").read().split(",")
 dde_basic_dict={
             'ID': '代碼', 
             'Name': '商品',
