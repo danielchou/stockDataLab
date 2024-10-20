@@ -56,7 +56,7 @@ def get_first_item(text):
 def fetch_multiple_dde_data(service, topic, items):
     try:
         dde_client = dde.CreateServer()
-        dde_client.Create("MyClient")
+        dde_client.Create("MyClient2222")
         
         conversation = dde.CreateConversation(dde_client)
         conversation.ConnectTo(service, topic)

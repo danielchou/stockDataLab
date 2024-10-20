@@ -1,15 +1,7 @@
 import pandas as pd
 import _beowFmt as fm
 import _beowDDE as bwdde
-
-# 設置顯示選項
-# pd.set_option('display.unicode.ambiguous_as_wide', True)
-# pd.set_option('display.unicode.east_asian_width', True)
-# pd.set_option('display.width', 880)  # 設置顯示寬度
-# # pd.set_option('display.max_columns', None)  # 顯示所有列
-# pd.set_option('display.max_rows', 40)  # 顯示所有行
-# pd.set_option('display.expand_frame_repr', False)  # 不自動換行
-
+import time
 
 def process_dde_data(columns, data, sep):
     # 打印原始數據以檢查格式
@@ -49,14 +41,14 @@ def calcX(r):
 
 def fmt_xq2json(r):
     stockId, stockName,k, low, high, close, yesterdayClose, amplitude, estValue, totalValue, volRate, turnOver,\
-          roe, ioRate, market, vMa5, ln, whaleSpread, whaleSpreadRatio, \
-          cap, pe, pb, yoy, mom, net, dvd, info, shh, inv, x, mn = r["代碼"], r["商品"], r["多空"], r["最低"], r["最高"], r["成交"], r["昨收"], r["漲幅%"], r["估計量"],r["總量"], r["量比"], r["換手率%"], \
-            r["ROE%"], r["內外盤%"], r["market"], r["五日量比"], r["融資使用率%"], r["大戶差2"], r["大戶差比"], \
-            r["cap"],r["pe"],r['pb'],r['yoy'],r['mom'],r['net'],r["dvd"],r["info"],r['shh'],r['inv'],r['x'],r['mm']
+        market, whaleSpread, whaleSpreadRatio,ln, \
+        roe, pe, pb, yoy, mom, net, dvd, info, shh, inv, x, mn = r["代碼"], r["商品"], r["多空"], r["最低"], r["最高"], r["成交"], r["昨收"], r["漲幅%"], r["估計量"],r["總量"], r["量比"], r["換手率%"], \
+            r["market"], r["大戶差2"], r["大戶差比"], r["融資使用率%"], \
+            r["roe"],r["pe"],r['pb'],r['yoy'],r['mom'],r['net'],r["dvd"],r["info"],r['shh'],r['inv'],r['x'],r['mm']
    
-    # ln = "" if (ln == '--') else ln   # Finance Used Ratio 融資使用率
+    ln = "" if (ln == '--') else ln   # Finance Used Ratio 融資使用率
     roe = 0 if (roe == '--') else roe
-    ioRate = 0 if (ioRate == '--') else ioRate
+    # ioRate = 0 if (ioRate == '--') else ioRate
     estValue = 0 if (estValue == '--') else estValue
     yoy = 0 if (yoy == '--') else yoy
     mom = 0 if (mom == '--') else mom
@@ -72,7 +64,7 @@ def fmt_xq2json(r):
         print(f"An error occurred: {e}")
         jmp = 0
     
-    sql = f'"id":{stockId},"n":"{stockName}","k":{k},"j":{jmp},"c":{close},"yc":{yesterdayClose},"v":{totalValue},"vE":{estValue},"amp":{amplitude},"vR":{volRate},"turOv":{turnOver},"roe":{roe},"ioR":{ioRate},"ind":"{market}","v5":{vMa5},"ln":"{ln}","wts":{whaleSpread},"wtr":{whaleSpreadRatio},"pe":{pe},"pb":{pb},"yy":{yoy},"mm":{mom},"nt":{net},"dd":"{dvd}","fo":"{info}","sh":"{shh}","iv":"{inv}","x":{x},"mn":"{mn}"'
+    sql = f'"id":{stockId},"n":"{stockName}","k":{k},"j":{jmp},"c":{close},"yc":{yesterdayClose},"v":{totalValue},"vE":{estValue},"amp":{amplitude},"vR":{volRate},"turOv":{turnOver},"ind":"{market}","wts":{whaleSpread},"wtr":{whaleSpreadRatio},"ln":{ln},"roe":{roe},"pe":{pe},"pb":{pb},"yy":{yoy},"mm":{mom},"nt":{net},"dd":"{dvd}","fo":"{info}","sh":"{shh}","iv":"{inv}","x":{x},"mn":"{mn}"'
     return "{" + sql + "},"
 
 
@@ -83,36 +75,40 @@ def fmt_group_json(r):
     # sql = f'"market":"{market}","dls":"{details}"'
     return "{" + sql + "},"
 
-def Main(topic, ddeDict, stock_Ids, sep):
+def Main(topic, ddeDict, stockFiles, sep):
     service = "XQLITE"
 
     dde_List = list(ddeDict.keys())   #將dictionary物件轉換成list欄位
-    # print(dde_List)
-    ddeItems = [f"{code}.TW-{",".join(dde_List)}" for code in stock_Ids]
-    data = bwdde.fetch_multiple_dde_data(service, topic, ddeItems)
-
+    
+    stockLists = []
+    for stockFile in stockFiles:
+        stock_Ids = open(stockFile, "r").read().split(",")
+        ddeItems = [f"{code}.TW-{",".join(dde_List)}" for code in stock_Ids]
+        stockList = bwdde.fetch_multiple_dde_data(service, topic, ddeItems)
+        # print(len(stockList))
+        time.sleep(5)
+        stockLists += stockList
+    data = stockLists
     
     if data:
         df = process_dde_data(dde_List, data, sep)
         # 重命名列名
         df = df.rename(columns=ddeDict)
-        
 
        # 將百分比列轉換為浮點數
         df['ID'] = df['代碼'].astype(int)
-        df['內外盤%'] = df['內外盤%'].str.replace('%', '')
+        # df['內外盤%'] = df['內外盤%'].str.replace('%', '')
         df['漲幅%'] = df['漲幅%'].str.replace('%', '').replace('+', '')
-        df['融資使用率%'] = df['融資使用率%'].str.replace('--', '')
 
-        str2Float_columns = ['漲幅%', '成交', '昨收', '最低', '最高', '換手率%', '大單差%', '大戶差比', '量比']
-        df[str2Float_columns] = df[str2Float_columns].replace('--', '0').astype(float)        
+        str2Float_columns = ['漲幅%', '成交', '昨收', '最低', '最高', '換手率%', '大戶差比', '量比', '融資使用率%']
+        df[str2Float_columns] = df[str2Float_columns].replace('--', '').replace('-', '').replace('', '0').astype(float)        
         df['總量'] = pd.to_numeric(df['總量'])
         df['總量'] = df['總量'].astype(int)
         df['多空'] = df['漲幅%'].apply(lambda x: 1 if x > 0 else 0)
         df['大戶差2'] =df['大戶差'].apply(bwdde.to_billion)           #全部改以億為單位
-        df['五日量比'] = df.apply(lambda r: round(float(r['總量']) / float(r['五日均量']), 1) if r['估計量'] == '--' and float(r['五日均量']) != 0 else
-                           round(float(r['估計量']) / float(r['五日均量']), 1) if float(r['五日均量']) != 0 else
-                           0, axis=1)
+        # df['五日量比'] = df.apply(lambda r: round(float(r['總量']) / float(r['五日均量']), 1) if r['估計量'] == '--' and float(r['五日均量']) != 0 else
+        #                    round(float(r['估計量']) / float(r['五日均量']), 1) if float(r['五日均量']) != 0 else
+        #                    0, axis=1)
         
         #--合併產業資訊--------------------------------------------------------------------------------
         stock_group_file = r"webJson\stock_group.csv"
@@ -120,7 +116,7 @@ def Main(topic, ddeDict, stock_Ids, sep):
         stockMarket.columns = ["name","id","market"]
         # print(stockMarket.head())
         df = pd.merge(df, stockMarket, left_on="ID", right_on="id")  ## 結合股票名稱
-        # print(df)
+        # print(df[df['ID']==4566])
        
         # df2 = df[(df['大戶差2'] > 0.7) & (df['大戶差比'] > 10)]
         # df2 = df[(df['大戶差比'] > 15) | (df['大戶差比'] < -15)]
@@ -133,7 +129,7 @@ def Main(topic, ddeDict, stock_Ids, sep):
         })
         grouped.columns = ['平均量比', '筆數', '換手率%', '大戶買總額','大戶買平均','大戶買多的股票數量']
         grouped = grouped.round(1)
-        
+        # print(grouped)
 
         df_group = grouped[(grouped['大戶買總額'] >= 0.8) | (grouped['大戶買總額'] <= 0)].sort_values(by='大戶買平均', ascending=False)
         # df_group = grouped[grouped['平均大戶差比'] >= 10].sort_values(by='平均量比', ascending=False)
@@ -158,7 +154,7 @@ def Main(topic, ddeDict, stock_Ids, sep):
         financeData_file = r'webJson\\financeData.csv'
         financeData = pd.read_csv(financeData_file, encoding='utf-8')
         financeData = financeData.fillna('')
-        financeData.columns = ["id","cap","pe","pb","yoy","mom","net","dvd","info","shh","mm","inv"]
+        financeData.columns = ["id","cap","roe","pe","pb","yoy","mom","net","dvd","info","shh","mm","inv"]
         # print(financeData.head(60))
         df = pd.merge(df, financeData, left_on="ID", right_on="id")  ## 結合股票名稱
         df['x'] = df.apply(calcX, axis=1)
@@ -166,7 +162,7 @@ def Main(topic, ddeDict, stock_Ids, sep):
         df['json']= df.apply(fmt_xq2json, axis = 1) 
         # print(df[df["ID"]==4768])
 
-        targe_file = r"\webJson\currentMaxValue.100.json" #產出json資料到WebJson目錄下
+        targe_file = r"webJson\currentMaxValue.100.json" #產出json資料到WebJson目錄下
         ss = ''.join(df['json'].fillna('').astype(str))[:-1]
         fm.write_LogFile(targe_file, f"[{ss}]")     #送出到網站    
         fm.FtpFile(targe_file, 'static/currentMaxValue.100.json')
@@ -175,8 +171,14 @@ def Main(topic, ddeDict, stock_Ids, sep):
 
 
 # 追蹤股票號碼
-stock_File = r"webJson\a013_stockIds.txt"
-stock_Ids = open(stock_File, "r").read().split(",")
+stock_Files = [
+            #   r"stock\Id1.txt",
+            #    r"stock\Id2.txt",
+            #    r"stock\Id3.txt",
+            #    r"stock\Id4.txt",
+            #    r"stock\Id5.txt"
+               r"stock\sorted.txt"
+               ] 
 dde_basic_dict={
             'ID': '代碼', 
             'Name': '商品',
@@ -186,15 +188,15 @@ dde_basic_dict={
             'TurnoverRatio': '換手率%',
             'PreClose': '昨收',
             'PriceChangeRatio': '漲幅%',
-            'DLOrderValueDiffRatio': '大單差%',
             'MajorOrderDif': '大戶差',
             'MajorOrderDifRatio': '大戶差比',
             'Low': '最低',
             'High': '最高',
-            'ROE': 'ROE%',
-            'InOutRatio': '內外盤%',
             'EstimatedTotalVolume': '估計量',
-            '5DayAvgVol': '五日均量',
+            # 'ROE': 'ROE%',
+            # 'InOutRatio': '內外盤%',
+            # 'DLOrderValueDiffRatio': '大單差%',
+            # '5DayAvgVol': '五日均量',
             'FinanceUsedRatio': '融資使用率%',
         }
-Main("Quote", dde_basic_dict, stock_Ids, ";")
+Main("Quote", dde_basic_dict, stock_Files, ";")
