@@ -41,10 +41,11 @@ def calcX(r):
 
 def fmt_xq2json(r):
     stockId, stockName,k, low, high, close, yesterdayClose, amplitude, estValue, totalValue, volRate, turnOver,\
-        market, whaleSpread, whaleSpreadRatio,ln, \
-        roe, pe, pb, yoy, mom, net, dvd, info, shh, inv, x, mn = r["代碼"], r["商品"], r["多空"], r["最低"], r["最高"], r["成交"], r["昨收"], r["漲幅%"], r["估計量"],r["總量"], r["量比"], r["換手率%"], \
-            r["market"], r["大戶差2"], r["大戶差比"], r["融資使用率%"], \
-            r["roe"],r["pe"],r['pb'],r['yoy'],r['mom'],r['net'],r["dvd"],r["info"],r['shh'],r['inv'],r['x'],r['mm']
+    market, whaleSpread, whaleSpreadRatio,ln, \
+    roe, pe, pb, yoy, mom, net, dvd, info, group, shh, inv, mn = \
+        r["代碼"], r["商品"], r["多空"], r["最低"], r["最高"], r["成交"], r["昨收"], r["漲幅%"], r["估計量"],r["總量"], r["量比"], r["換手率%"], \
+        r["market"], r["大戶差2"], r["大戶差比"], r["融資使用率%"], \
+        r["roe"],r["pe"],r['pb'],r['yoy'],r['mom'],r['net'],r["dvd"],r["info"],r["group"],r['shh'],r['inv'],r['mm']
    
     ln = "" if (ln == '--') else ln   # Finance Used Ratio 融資使用率
     roe = 0 if (roe == '--') else roe
@@ -64,7 +65,7 @@ def fmt_xq2json(r):
         print(f"An error occurred: {e}")
         jmp = 0
     
-    sql = f'"id":{stockId},"n":"{stockName}","k":{k},"j":{jmp},"c":{close},"yc":{yesterdayClose},"v":{totalValue},"vE":{estValue},"amp":{amplitude},"vR":{volRate},"turOv":{turnOver},"ind":"{market}","wts":{whaleSpread},"wtr":{whaleSpreadRatio},"ln":{ln},"roe":{roe},"pe":{pe},"pb":{pb},"yy":{yoy},"mm":{mom},"nt":{net},"dd":"{dvd}","fo":"{info}","sh":"{shh}","iv":"{inv}","x":{x},"mn":"{mn}"'
+    sql = f'"id":{stockId},"n":"{stockName}","k":{k},"j":{jmp},"c":{close},"yc":{yesterdayClose},"v":{totalValue},"vE":{estValue},"amp":{amplitude},"vR":{volRate},"turOv":{turnOver},"ind":"{market}","wts":{whaleSpread},"wtr":{whaleSpreadRatio},"ln":{ln},"roe":{roe},"pe":{pe},"pb":{pb},"yy":{yoy},"mm":{mom},"nt":{net},"dd":"{dvd}","fo":"{info}","gp":"{group}","sh":"{shh}","iv":"{inv}","mn":"{mn}"'
     return "{" + sql + "},"
 
 
@@ -85,7 +86,7 @@ def Main(topic, ddeDict, stockFiles, sep):
         stock_Ids = open(stockFile, "r").read().split(",")
         ddeItems = [f"{code}.TW-{",".join(dde_List)}" for code in stock_Ids]
         stockList = bwdde.fetch_multiple_dde_data(service, topic, ddeItems)
-        # print(len(stockList))
+        print(len(stockList))
         time.sleep(5)
         stockLists += stockList
     data = stockLists
@@ -111,12 +112,18 @@ def Main(topic, ddeDict, stockFiles, sep):
         #                    0, axis=1)
         
         #--合併產業資訊--------------------------------------------------------------------------------
-        stock_group_file = r"webJson\stock_group.csv"
-        stockMarket = pd.read_csv(stock_group_file, encoding='utf-8')
-        stockMarket.columns = ["name","id","market"]
+        stock_subject_file = r"webJson\stock_subject.csv"
+        stockSubject = pd.read_csv(stock_subject_file, encoding='utf-8')
+        stockSubject.columns = ["name","id","market"]
         # print(stockMarket.head())
-        df = pd.merge(df, stockMarket, left_on="ID", right_on="id")  ## 結合股票名稱
-        # print(df[df['ID']==4566])
+        df = pd.merge(df, stockSubject, left_on="ID", right_on="id")  ## 結合股票名稱
+
+        #--合併集團年底作帳資訊--------------------------------------------------------------------------------
+        stock_group_file = r"webJson\stock_group.csv"
+        stockGroup = pd.read_csv(stock_group_file, encoding='utf-8')
+        stockGroup.columns = ["id","group"]
+        # print(stockMarket.head())
+        df = pd.merge(df, stockGroup, left_on="ID", right_on="id")  ## 結合股票名稱
        
         # df2 = df[(df['大戶差2'] > 0.7) & (df['大戶差比'] > 10)]
         # df2 = df[(df['大戶差比'] > 15) | (df['大戶差比'] < -15)]
@@ -151,13 +158,14 @@ def Main(topic, ddeDict, stockFiles, sep):
         fm.FtpFile(targe_file, 'static/currStockMarket.json')
 
         #--合併財務資訊--------------------------------------------------------------------------------
-        financeData_file = r'webJson\\financeData.csv'
+        financeData_file = r'webJson\\stock_finance.csv'
         financeData = pd.read_csv(financeData_file, encoding='utf-8')
         financeData = financeData.fillna('')
         financeData.columns = ["id","cap","roe","pe","pb","yoy","mom","net","dvd","info","shh","mm","inv"]
         # print(financeData.head(60))
         df = pd.merge(df, financeData, left_on="ID", right_on="id")  ## 結合股票名稱
-        df['x'] = df.apply(calcX, axis=1)
+        
+        # df['x'] = df.apply(calcX, axis=1)
         df['mm'] = df['mm'].str.replace('2024/', '') #營收月份 2024/08
         df['json']= df.apply(fmt_xq2json, axis = 1) 
         # print(df[df["ID"]==4768])
@@ -171,14 +179,7 @@ def Main(topic, ddeDict, stockFiles, sep):
 
 
 # 追蹤股票號碼
-stock_Files = [
-            #   r"stock\Id1.txt",
-            #    r"stock\Id2.txt",
-            #    r"stock\Id3.txt",
-            #    r"stock\Id4.txt",
-            #    r"stock\Id5.txt"
-               r"stock\sorted.txt"
-               ] 
+stock_Files = [r"stock\sorted.txt"] 
 dde_basic_dict={
             'ID': '代碼', 
             'Name': '商品',
@@ -193,10 +194,6 @@ dde_basic_dict={
             'Low': '最低',
             'High': '最高',
             'EstimatedTotalVolume': '估計量',
-            # 'ROE': 'ROE%',
-            # 'InOutRatio': '內外盤%',
-            # 'DLOrderValueDiffRatio': '大單差%',
-            # '5DayAvgVol': '五日均量',
             'FinanceUsedRatio': '融資使用率%',
         }
-Main("Quote", dde_basic_dict, stock_Files, ";")
+Main("Quote", dde_basic_dict, stock_Files, ";")   
