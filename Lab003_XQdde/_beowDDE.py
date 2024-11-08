@@ -183,7 +183,7 @@ def cal_nearBy(r):
 
     # 使用層次聚類找到在1%內的群組
     Z = linkage(condensed_dist_matrix, method='single')
-    threshold = 0.015  # 1% 差距閾值
+    threshold = 0.009  # 1% 差距閾值
     clusters = fcluster(Z, threshold, criterion='distance')
 
     # 將群組結果映射回標籤
