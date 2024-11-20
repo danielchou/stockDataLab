@@ -110,6 +110,7 @@ def permutationIndex():
  ('a', 'e', 'd', 'b', 'c'):111, ('b', 'e', 'd', 'a', 'c'):112,('c', 'e', 'd', 'a', 'b'):113,  ('d', 'e', 'c', 'a', 'b'):114,  ('e', 'd', 'c', 'a', 'b'):115, 
  ('a', 'e', 'd', 'c', 'b'):116, ('b', 'e', 'd', 'c', 'a'):117,('c', 'e', 'd', 'b', 'a'):118, ('d', 'e', 'c', 'b', 'a'):119,  ('e', 'd', 'c', 'b', 'a'):120 }
 
+
 def convert_and_round(str_value):
     if str_value == '':
         return None
@@ -227,7 +228,7 @@ def cal_nearBy(r):
     aa, tangle_line = replace_permutations(A, B) 
     r['sortData'] = sorted_data_tuple
     r['sortLabel'] = aa
-    r['sortCode'] = permutation_to_index_tuple.get(sorted_labels, "未找到該排列") # 查找該排列的順序編號
+    r['sortCode'] = 121 - permutation_to_index_tuple.get(sorted_labels, "未找到該排列") # 查找該排列的順序編號，越大越多頭
     r['nearBy'] = tangle_line
     r['nearByAvg'] = convert_and_round(avg)
 
