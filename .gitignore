@@ -1,4 +1,10 @@
+# 配置文件
 config.txt
+chatGPT_apikey.txt
+.env
+.codegpt
+
+# 數據目錄
 oldDays/
 xq2/
 xq-data
@@ -6,10 +12,57 @@ xq_import/
 xq_import_today/
 webJson/
 volumeData/
-chatGPT_apikey.txt
 data/old
+data/json/
+*.db
 stock.db
-build.whl/
+
+# 虛擬環境
+dev-finlab/Lib/
+dev-finlab/Scripts/
+dev-finlab/share/
+dev-finlab/__pycache__/
+dev-finlab/pyvenv.cfg
+venv/
+env/
+.venv/
+
+# Python
 __pycache__/
-.env
-.codegpt
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+build.whl/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 編輯器和IDE文件
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# 日誌文件
+*.log
+logs/
+
+# 備份文件
+*.bak
+*.backup
+*.tmp

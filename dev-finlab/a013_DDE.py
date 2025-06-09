@@ -133,8 +133,10 @@ def Main(topic, ddeDict, stockFiles, sep):
         df['總量'] = df['總量'].astype(int)
         df['多空'] = df['漲幅%'].apply(lambda x: 1 if x > 0 else 0)
         df['大戶差2'] = df['大戶差'].apply(bwdde.to_billion)            # 全部改以億為單位
-        df['far'] = df['總委賣']/df['總委買']                           # 計算委賣買進五盤的比率
-        df['far'] = df['far'].fillna(0).round(2)            # 將 NaN 填充為 0
+        # df['far'] = df['總委賣']/df['總委買']                           # 計算委賣買進五盤的比率
+        # df['far'] = df['總委賣'].div(df['總委買'], fill_value=np.nan)    # 使用 div 方法进行除法运算，并设置 fill_value 参数来处理无穷大值。
+        df['far'] = np.where(df['總委買'] != 0, df['總委賣'] / df['總委買'], np.nan)
+        df['far'] = df['far'].fillna(0).round(2)                       # 將 NaN 填充為 0
         # del df['總委賣']
         # del df['總委買']
         print(df[df['ID']==2609])
@@ -256,10 +258,10 @@ def Main(topic, ddeDict, stockFiles, sep):
         # print(df.head(100))
         # print(df[df['ID']==4979]["sortData"])
 
-        # targe_file = r"webJson\currentMaxValue.100.json" #產出json資料到WebJson目錄下
-        # ss = ''.join(df['json'].fillna('').astype(str))[:-1]
-        # fm.write_LogFile(targe_file, f"[{ss}]")     #送出到網站    
-        # fm.FtpFile(targe_file, 'static/currentMaxValue.100.json')
+        targe_file = r"webJson\currentMaxValue.100.json" #產出json資料到WebJson目錄下
+        ss = ''.join(df['json'].fillna('').astype(str))[:-1]
+        fm.write_LogFile(targe_file, f"[{ss}]")     #送出到網站    
+        fm.FtpFile(targe_file, 'static/currentMaxValue.100.json')
     else:
         print("Failed to fetch data")
 
